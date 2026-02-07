@@ -11,7 +11,17 @@ export interface Project {
   lastStatusChange?: number;
   responseTime?: number;
   createdAt: number;
-  updatedAt: number;
+  updatedAt?: number;
+  // Advanced check options
+  checkType?: 'http' | 'content' | 'json';
+  containsText?: string;
+  notContainsText?: string;
+  jsonPath?: string;
+  jsonValue?: string;
+  // Login flow
+  loginUrl?: string;
+  loginEmail?: string;
+  loginPassword?: string;
 }
 
 export interface Alert {

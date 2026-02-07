@@ -12,6 +12,12 @@ export async function checkProject(project: Project): Promise<CheckResult> {
   const startTime = performance.now();
   
   try {
+    // Use advanced check if configured
+    if (project.checkType && project.checkType !== 'http') {
+      return await advancedCheck(project);
+    }
+    
+    // Simple HTTP check
     const response = await fetch(`/api/check?url=${encodeURIComponent(url)}`, {
       method: 'GET',
       signal: AbortSignal.timeout(30000)
@@ -23,6 +29,56 @@ export async function checkProject(project: Project): Promise<CheckResult> {
     return {
       status: data.ok ? 'up' : 'down',
       responseTime,
+      statusCode: data.statusCode,
+      error: data.error
+    };
+  } catch (err) {
+    return {
+      status: 'down',
+      responseTime: Math.round(performance.now() - startTime),
+      error: err instanceof Error ? err.message : 'Unknown error'
+    };
+  }
+}
+
+async function advancedCheck(project: Project): Promise<CheckResult> {
+  const startTime = performance.now();
+  
+  try {
+    const config: any = {
+      url: project.healthEndpoint || project.url,
+      type: project.checkType
+    };
+    
+    // Content check options
+    if (project.containsText) config.containsText = project.containsText;
+    if (project.notContainsText) config.notContainsText = project.notContainsText;
+    
+    // JSON check options
+    if (project.jsonPath) config.jsonPath = project.jsonPath;
+    if (project.jsonValue) config.jsonValue = project.jsonValue;
+    
+    // Login flow
+    if (project.loginUrl && project.loginEmail && project.loginPassword) {
+      config.loginUrl = project.loginUrl;
+      config.loginData = {
+        email: project.loginEmail,
+        password: project.loginPassword
+      };
+    }
+    
+    const response = await fetch('/api/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config),
+      signal: AbortSignal.timeout(30000)
+    });
+    
+    const data = await response.json();
+    
+    return {
+      status: data.ok ? 'up' : 'down',
+      responseTime: data.responseTime || Math.round(performance.now() - startTime),
       statusCode: data.statusCode,
       error: data.error
     };
