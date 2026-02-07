@@ -4,6 +4,7 @@
   import { subscribeToPush, getPushPermission } from '$lib/push';
   import { checkProject, formatUptime, formatResponseTime } from '$lib/monitor';
   import { getDeviceName, regenerateDeviceName } from '$lib/device-name';
+  import UpdateBanner from '$lib/UpdateBanner.svelte';
   
   let projects: Project[] = [];
   let editingProject: Project | null = null;
@@ -185,6 +186,8 @@
 <svelte:head>
   <title>Watchdog - Monitoring</title>
 </svelte:head>
+
+<UpdateBanner />
 
 <main>
   <header>

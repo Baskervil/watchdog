@@ -1,41 +1,53 @@
 // Watchdog Service Worker
+const CACHE_VERSION = '20b1c330';
+const CACHE_NAME = `watchdog-${CACHE_VERSION}`;
 
-const CACHE_NAME = 'watchdog-v1';
 const STATIC_ASSETS = [
   '/',
-  '/manifest.json'
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
-// Install
+// Install - cache assets
 self.addEventListener('install', (event) => {
+  console.log('[SW] Installing version:', CACHE_VERSION);
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(STATIC_ASSETS);
     })
   );
-  self.skipWaiting();
+  // Don't skip waiting - let user decide when to update
 });
 
-// Activate
+// Activate - clean old caches
 self.addEventListener('activate', (event) => {
+  console.log('[SW] Activating version:', CACHE_VERSION);
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+        keys.filter(key => key.startsWith('watchdog-') && key !== CACHE_NAME)
+          .map(key => {
+            console.log('[SW] Removing old cache:', key);
+            return caches.delete(key);
+          })
       );
     })
   );
   self.clients.claim();
 });
 
-// Fetch
+// Fetch - network first, fallback to cache
 self.addEventListener('fetch', (event) => {
-  // Network first, fallback to cache
+  // Skip non-GET and chrome-extension requests
+  if (event.request.method !== 'GET' || event.request.url.startsWith('chrome-extension')) {
+    return;
+  }
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Clone and cache
-        if (response.ok && event.request.method === 'GET') {
+        if (response.ok) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, clone);
@@ -47,6 +59,14 @@ self.addEventListener('fetch', (event) => {
         return caches.match(event.request);
       })
   );
+});
+
+// Listen for skip waiting message from client
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    console.log('[SW] Skip waiting requested');
+    self.skipWaiting();
+  }
 });
 
 // Push notification
@@ -84,14 +104,12 @@ self.addEventListener('notificationclick', (event) => {
   
   event.waitUntil(
     clients.matchAll({ type: 'window' }).then((windowClients) => {
-      // Focus existing window if available
       for (const client of windowClients) {
         if (client.url.includes(self.location.origin) && 'focus' in client) {
           client.navigate(url);
           return client.focus();
         }
       }
-      // Open new window
       return clients.openWindow(url);
     })
   );
