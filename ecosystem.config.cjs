@@ -7,8 +7,8 @@ module.exports = {
       NODE_ENV: 'production',
       PORT: 4012,
       ORIGIN: 'https://watchdog.pk01.sk',
-      VAPID_PUBLIC_KEY: process.env.VAPID_PUBLIC_KEY || '',
-      VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY || '',
+      VAPID_PUBLIC_KEY: 'BIXWS3_zdgcXaIkRcVWfNYdlIJllAmDFFS4uKy30R_f71lslDRj7TmMZTCZ4716IAfT1gQunJSMPlJ4US_cBC_8',
+      VAPID_PRIVATE_KEY: 'NUynK-AglPbgNflKI_n1x-7mZpn7eOuGePdjaug2sGo',
       VAPID_EMAIL: 'mailto:peter@pk01.sk'
     },
     instances: 1,

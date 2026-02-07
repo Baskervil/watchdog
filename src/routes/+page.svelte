@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { getAllProjects, saveProject, deleteProject, type Project } from '$lib/db';
+  import type { Project } from '$lib/db';
   import { subscribeToPush, getPushPermission } from '$lib/push';
   import { checkProject, formatUptime, formatResponseTime } from '$lib/monitor';
   import { getDeviceName, regenerateDeviceName } from '$lib/device-name';
@@ -62,7 +62,30 @@
   });
   
   async function loadProjects() {
-    projects = await getAllProjects();
+    const res = await fetch('/api/projects');
+    projects = await res.json();
+  }
+  
+  async function saveProject(project: Partial<Project>): Promise<Project> {
+    if (project.id && projects.find(p => p.id === project.id)) {
+      const res = await fetch(`/api/projects/${project.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(project)
+      });
+      return res.json();
+    } else {
+      const res = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(project)
+      });
+      return res.json();
+    }
+  }
+  
+  async function deleteProject(id: string) {
+    await fetch(`/api/projects/${id}`, { method: 'DELETE' });
   }
   
   async function runChecks() {
