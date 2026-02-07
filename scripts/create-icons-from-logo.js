@@ -8,7 +8,8 @@ const sizes = [
 ];
 
 async function createIcons() {
-  const input = 'static/watchdog-logo.jpg';
+  // Use PNG if available, fallback to JPG
+const input = 'static/watchdog-logo.png';
   
   for (const { size, name } of sizes) {
     await sharp(input)
