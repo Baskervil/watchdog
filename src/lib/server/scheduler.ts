@@ -78,13 +78,17 @@ async function checkUrl(url: string): Promise<{ ok: boolean; responseTime: numbe
     const response = await fetch(url, {
       method: 'GET',
       signal: controller.signal,
+      redirect: 'follow',
       headers: { 'User-Agent': 'Watchdog/1.0' }
     });
     
     clearTimeout(timeout);
     
+    // Consider 2xx and 3xx as OK (redirects mean server is alive)
+    const isOk = response.status >= 200 && response.status < 400;
+    
     return {
-      ok: response.ok,
+      ok: isOk,
       responseTime: Date.now() - startTime,
       statusCode: response.status
     };
