@@ -188,7 +188,7 @@
 
 <main>
   <header>
-    <h1>🐕 Watchdog</h1>
+    <h1><img src="/icon-192.png" alt="Watchdog" class="logo" /> Watchdog</h1>
     <p class="subtitle">Monitoring projektov</p>
   </header>
   
@@ -322,6 +322,16 @@
     margin: 0;
     font-size: 2rem;
     color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  
+  .logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
   }
   
   .subtitle {
