@@ -213,7 +213,8 @@
 
 <main>
   <header>
-    <h1><img src="/icon-192.png" alt="Watchdog" class="logo" /> Watchdog</h1>
+    <img src="/icon-192.png" alt="Watchdog" class="hero-logo" />
+    <h1>Watchdog</h1>
     <p class="subtitle">Monitoring projektov</p>
   </header>
   
@@ -343,20 +344,17 @@
     margin-bottom: 30px;
   }
   
+  .hero-logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3));
+  }
+  
   h1 {
     margin: 0;
     font-size: 2rem;
     color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-  }
-  
-  .logo {
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
   }
   
   .subtitle {
