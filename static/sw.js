@@ -1,5 +1,5 @@
 // Watchdog Service Worker
-const CACHE_VERSION = '20b1c330';
+const CACHE_VERSION = 'a87a437d';
 const CACHE_NAME = `watchdog-${CACHE_VERSION}`;
 
 const STATIC_ASSETS = [
