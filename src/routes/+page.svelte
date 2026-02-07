@@ -345,10 +345,10 @@
   }
   
   .hero-logo {
-    width: 180px;
-    height: 180px;
-    margin-bottom: 20px;
-    filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.4));
+    width: 360px;
+    height: 360px;
+    margin-bottom: 25px;
+    filter: drop-shadow(0 0 40px rgba(59, 130, 246, 0.5));
   }
   
   h1 {
