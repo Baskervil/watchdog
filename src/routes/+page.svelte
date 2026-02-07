@@ -52,9 +52,8 @@
       pushEnabled = pushPermission === 'granted';
     }
     
-    // Start periodic checks
-    checkInterval_ = setInterval(runChecks, 60000) as unknown as number;
-    runChecks();
+    // Auto-refresh projects from server every 10 seconds
+    checkInterval_ = setInterval(loadProjects, 10000) as unknown as number;
   });
   
   onDestroy(() => {
