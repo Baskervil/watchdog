@@ -1,0 +1,23 @@
+services:
+  watchdog:
+    build: .
+    container_name: watchdog
+    restart: unless-stopped
+    ports:
+      - "4012:4012"
+    environment:
+      - NODE_ENV=production
+      - PORT=4012
+      - ORIGIN=https://watchdog.pk01.sk
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
+      - VAPID_EMAIL=${VAPID_EMAIL}
+      - VITE_VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:4012/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

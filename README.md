@@ -62,6 +62,24 @@ Check if URL is accessible.
 
 ## Production
 
+### Docker (odporúčané)
+
+```bash
+# Build a spusti
+docker compose up -d --build
+
+# Logy
+docker compose logs -f
+
+# Reštart
+docker compose restart
+
+# Stop
+docker compose down
+```
+
+### PM2 (alternatíva)
+
 ```bash
 # Build
 npm run build
